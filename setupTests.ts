@@ -1,7 +1,9 @@
+import connection from "./src/connection";
+
 beforeEach(async () => {
-	console.log("Before Each");
+	await connection.create();
 });
 
 afterEach(async () => {
-	console.log("After Each");
+	await connection.close();
 });
