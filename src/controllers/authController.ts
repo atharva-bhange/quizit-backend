@@ -66,6 +66,22 @@ export const logout = catchAsync(async (_, res) => {
 	res.clearCookie("jwt").sendStatus(200);
 });
 
+export const isLoggedIn = catchAsync(async (req, res) => {
+	const token = req.cookies.jwt;
+
+	if (!token) res.sendStatus(401);
+
+	const parsed = jwt.verify(token, process.env.JWT_SECRET) as { id: number };
+
+	const user = await User.findOne(parsed.id);
+	if (!user) res.sendStatus(401);
+
+	res.status(200).json({
+		status: "success",
+		data: { user },
+	});
+});
+
 export const protect = (roles?: RoleType[]) =>
 	catchAsync(async (req, _, next) => {
 		const token = req.cookies.jwt;

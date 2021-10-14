@@ -3,6 +3,7 @@ import { config } from "dotenv";
 config();
 import express, { json } from "express";
 import morgan from "morgan";
+import cors from "cors";
 import globalErrorhandler from "./controllers/errorController";
 import userRouter from "./routes/userRoutes";
 import googleAuthRoutes from "./routes/googleAuthRoutes";
@@ -11,11 +12,19 @@ import configureGoogleAuth from "./utils/configureGoogleAuth";
 import configureFacebookAuth from "./utils/configureFacebookAuth";
 import passport from "passport";
 
+const { LATENCY = "0", FRONTEND_CLIENT = "http://localhost:3000" } =
+	process.env;
+
 const app = express();
 
-const { LATENCY = "0" } = process.env;
-
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+
+app.use(
+	cors({
+		credentials: true,
+		origin: FRONTEND_CLIENT,
+	})
+);
 
 app.use(json());
 app.use((_, __, next) => {

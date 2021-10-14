@@ -32,6 +32,12 @@
     - `401` - Incorrect email or password
     - `200` - User logged in successfully 
 
+- **GET** `/v1/user/login` - Check if user is logged in.
+    
+    Response Codes
+    - `401` - Not logged in
+    - `200` - User is logged in
+
 - **POST** `/v1/user/logout` - Logout the current user
   
 - **GET** `/v1/auth/google` - Login with google
