@@ -66,15 +66,17 @@ export const logout = catchAsync(async (_, res) => {
 	res.clearCookie("jwt").sendStatus(200);
 });
 
-export const isLoggedIn = catchAsync(async (req, res) => {
+export const isLoggedIn = catchAsync(async (req, res, next) => {
 	const token = req.cookies.jwt;
+	console.log(token);
 
-	if (!token) res.sendStatus(401);
+	if (!token) return next(new AppError("User not logged in.", 401));
 
 	const parsed = jwt.verify(token, process.env.JWT_SECRET) as { id: number };
 
 	const user = await User.findOne(parsed.id);
-	if (!user) res.sendStatus(401);
+	if (!user)
+		return next(new AppError("User with this token doesn't exist.", 401));
 
 	res.status(200).json({
 		status: "success",
